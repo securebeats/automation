@@ -21,3 +21,7 @@ go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
 # Download Cloud_enum
 echo "Downloading Cloud_enum..."
 git clone https://github.com/initstring/cloud_enum.git tools/cloud_enum
+
+# Download Cloud_enum
+echo "Downloading subfinder..."
+go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
