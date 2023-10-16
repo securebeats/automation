@@ -16,12 +16,12 @@ done < $input_file
 mkdir nmap
 
 # Run nmap scan and save greppable output to file
-nmap -sT -Pn -T3 --open -vv -iL $input_file -oA nmap/tcp.all --max-rtt-timeout 250ms --max-retries 3 --min-hostgroup=20 ; sudo nmap -sU -Pn -T3 --open -vv -iL $input_file -oA nmap/udp.top --max-rtt-timeout 250ms --max-retries 3 --min-hostgroup=20
+nmap -sT -Pn -T3 --open -vv -iL $input_file -oA nmap/tcp.top --max-rtt-timeout 250ms --max-retries 3 --min-hostgroup=20 ; sudo nmap -sU -Pn -T3 --open -vv -iL $input_file -oA nmap/udp.top --max-rtt-timeout 250ms --max-retries 3 --min-hostgroup=20
 
 cd nmap
 mkdir analysis
 
-grep "^Host:" tcp.all.gnmap | while read line; do
+grep "^Host:" tcp.top.gnmap | while read line; do
     ip=$(echo $line | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
     open_ports=$(echo $line | awk -F' ' '{for(i=4;i<=NF;i++)if($i=="Ports:"){for(j=i+1;j<=NF;j++)if($j~/^[0-9]+\/.*/){split($j,a,"/");printf("%s, ",a[1])}}}')
     for port in $(echo $open_ports | tr ',' ' '); do
