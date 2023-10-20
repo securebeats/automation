@@ -20,8 +20,9 @@ while IFS= read -r url; do
     sslscan_output=$(sslscan "$url")
 
     # Check if TLS version is less than 1.2
-    if [[ "$sslscan_output" =~ (TLSv1|SSLv3) ]]; then
-        echo "$url" >> "$output_file"
+    # Check if TLS version is less than 1.2
+    if [[ "$sslscan_output" =~ (TLSv1\.0|TLSv1\.1|SSLv[23]) ]]; then
+    echo "$url" >> "$output_file"
     fi
 
     # Check for weak ciphers
