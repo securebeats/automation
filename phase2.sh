@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Update the package lists for upgrades and new packages
-sudo apt-get update
+# sudo apt-get update
 
 # Install dnsx
 #sudo apt-get install dnsx -y
