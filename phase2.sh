@@ -32,7 +32,7 @@ read -e -p "Extern the dns resolver list: " resolver_list
 #python3 tools/cloud_enum/cloud_enum.py -kf $keywords_file -l cloudenum_$(date +"%m%d%H%M")
 
 # Run the dnsx command with the user-provided $i input
-dnsx -d $domainlist -w $dnsbruteforce_wordlist -r $resolver_list -o dns_brute.txt -stats
+#dnsx -d $domainlist -w $dnsbruteforce_wordlist -r $resolver_list -o dns_brute.txt -stats
 
 # Run the httpx command with the user-provided input
 httpx -l dns_brute.txt -sc -td -server -title -ip -fr -random-agent -o httpx.txt -vhost -tls-probe -tls-grab -nf
