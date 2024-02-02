@@ -36,3 +36,10 @@ read -e -p "Extern the dns resolver list: " resolver_list
 
 # Run the httpx command with the user-provided input
 httpx -l dns_brute.txt -sc -td -server -title -ip -fr -random-agent -o httpx.txt -vhost -tls-probe -tls-grab -nf
+
+# discover valid in-scope URLs
+grep -Ff nectar/targets.txt httpx.txt | sort -u | cut -d' ' -f1 >> urls.txt
+
+#run nuclei vulnerability scan
+nuclei -l urls.txt -stats -o nuclei_results.txt -rlm 1000
+
