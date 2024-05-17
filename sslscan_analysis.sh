@@ -31,12 +31,14 @@ while IFS= read -r url; do
 
     # Check if TLS version is less than 1.2
     if [[ "$sslscan_output" =~ (TLSv1\.1|TLSv1\.0|SSL)[[:space:]]+.*enabled ]]; then
+        echo "Weak TLS version detected for $url"
         echo "$url" >> "$output_file"
     fi
 
     # Check for weak ciphers
     weak_cipher_pattern="Accepted[[:space:]]+.*(NULL|EXP|DES|RC4-MD5)"
     if [[ "$sslscan_output" =~ $weak_cipher_pattern ]]; then
+        echo "Weak cipher detected for $url"
         echo "$url" >> "$weak_ciphers_file"
     fi
 
