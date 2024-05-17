@@ -1,14 +1,18 @@
 #!/bin/bash
 
+# Colors
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
 # Check if sslscan is installed
 if ! command -v sslscan &> /dev/null; then
-    echo "sslscan is not installed. Please install it first."
+    echo -e "${RED}sslscan is not installed. Please install it first.${NC}"
     exit 1
 fi
 
 # Check if the input file is provided
 if [ $# -ne 1 ]; then
-    echo "Usage: $0 <input_file>"
+    echo -e "${RED}Usage: $0 <input_file>${NC}"
     exit 1
 fi
 
@@ -30,15 +34,14 @@ while IFS= read -r url; do
     sslscan_output=$(sslscan "$url" 2>/dev/null)  # Suppress error output
 
     # Check if TLS version is less than 1.2
-    if [[ "$sslscan_output" =~ (TLSv1\.1|TLSv1\.0|SSL)[[:space:]]+.*enabled ]]; then
-        echo "Weak TLS version detected for $url"
+    if echo "$sslscan_output" | grep -q -E "(TLSv1\.1|TLSv1\.0|SSL)[[:space:]]+.*enabled"; then
+        echo -e "${RED}Weak TLS version detected for: $url${NC}"
         echo "$url" >> "$output_file"
     fi
 
     # Check for weak ciphers
-    weak_cipher_pattern="Accepted[[:space:]]+.*(NULL|EXP|DES|RC4-MD5)"
-    if [[ "$sslscan_output" =~ $weak_cipher_pattern ]]; then
-        echo "Weak cipher detected for $url"
+    if echo "$sslscan_output" | grep -q -E "Accepted[[:space:]]+.*(NULL|EXP|DES|RC4-MD5)"; then
+        echo -e "${RED}Weak cipher detected for: $url${NC}"
         echo "$url" >> "$weak_ciphers_file"
     fi
 
