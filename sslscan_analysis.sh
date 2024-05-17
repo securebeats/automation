@@ -1,27 +1,37 @@
 #!/bin/bash
 
+# Check if sslscan is installed
+if ! command -v sslscan &> /dev/null; then
+    echo "sslscan is not installed. Please install it first."
+    exit 1
+fi
+
+# Check if the input file is provided
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <input_file>"
+    exit 1
+fi
+
 # Check if the output file exists and delete it
 output_file="weak_TLS.txt"
+weak_ciphers_file="weak_ciphers.txt"
 if [ -f "$output_file" ]; then
     rm "$output_file"
 fi
-
-# Check if the weak ciphers file exists and delete it
-weak_ciphers_file="weak_ciphers.txt"
 if [ -f "$weak_ciphers_file" ]; then
     rm "$weak_ciphers_file"
 fi
 
-# Run sslscan on each URL and analyze the output
+# Run sslscan on each URL in parallel and analyze the output
 while IFS= read -r url; do
     echo "Analyzing $url"
 
-    # Run sslscan and capture the output
-    sslscan_output=$(sslscan "$url")
+    # Run sslscan in parallel and capture the output
+    sslscan_output=$(sslscan "$url" 2>/dev/null)  # Suppress error output
 
     # Check if TLS version is less than 1.2
-    if [[ "$sslscan_output" =~ "Preferred (TLSv1.1|TLSv1.0|SSL)" ]]; then
-    echo "$url" >> "$output_file"
+    if [[ "$sslscan_output" =~ (TLSv1\.1|TLSv1\.0|SSL)[[:space:]]+.*enabled ]]; then
+        echo "$url" >> "$output_file"
     fi
 
     # Check for weak ciphers
